@@ -1,11 +1,16 @@
-numbers = [1,2,2,2,3,4,4,5]
-dupl = []
-def duplicates(arr):
-    for i in range(len(arr)):
-        for j in range(i+1,len(numbers)):
-            if arr[i] == arr[j]:
-                if arr[i] not in dupl:
-                   dupl.append(arr[i])
-    return dupl
+from typing import List
+def removeDuplicates(nums: List[int]) -> int:
+        if not nums:
+            return 0
 
-print(duplicates(numbers))
+        k = 1
+
+        for i in range(1, len(nums)):
+            if nums[i] != nums[i - 1]:
+                nums[k] = nums[i]
+                k += 1
+
+        return k
+
+nums = [0,0,1,1,1,2,2,3,3,4]
+print(removeDuplicates(nums))
