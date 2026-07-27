@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>60 String + HashMap Problems</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0f0f11;
+        --surface: #17171a;
+        --card: #1e1e22;
+        --border: #2a2a30;
+        --border2: #38383f;
+        --text: #e8e6f0;
+        --muted: #7a7889;
+        --hint: #4f4d60;
+        --purple: #a78bfa;
+        --purple-dk: #7c3aed;
+        --purple-bg: #1f1b35;
+        --teal: #34d399;
+        --teal-bg: #0d2420;
+        --amber: #fbb041;
+        --amber-bg: #221a08;
+        --coral: #f87171;
+        --coral-bg: #2a1010;
+        --blue: #60a5fa;
+        --blue-bg: #0f1f35;
+        --green: #86efac;
+        --green-bg: #0d2016;
+        --easy-bg: #0a2010;
+        --easy-fg: #4ade80;
+        --med-bg: #221508;
+        --med-fg: #fb923c;
+        --accent: #a78bfa;
+        --font: "Inter", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      /* ── Header ── */
+      .hero {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 2.5rem 2rem 2rem;
+      }
+      .hero-inner {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .hero-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--purple);
+        background: var(--purple-bg);
+        padding: 3px 10px;
+        border-radius: 99px;
+        margin-bottom: 1rem;
+        border: 1px solid #3d2f6a;
+      }
+      .hero h1 {
+        font-size: clamp(22px, 4vw, 32px);
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.25;
+        margin-bottom: 0.5rem;
+      }
+      .hero h1 span {
+        color: var(--purple);
+      }
+      .hero p {
+        font-size: 14px;
+        color: var(--muted);
+        max-width: 520px;
+        margin-bottom: 1.5rem;
+      }
+
+      /* stat cards */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 1.5rem;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .stat-v {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .stat-l {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .stat-v.c-purple {
+        color: var(--purple);
+      }
+      .stat-v.c-teal {
+        color: var(--teal);
+      }
+      .stat-v.c-amber {
+        color: var(--amber);
+      }
+      .stat-v.c-coral {
+        color: var(--coral);
+      }
+
+      /* progress bar */
+      .prog-wrap {
+        margin-top: 1.25rem;
+      }
+      .prog-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .prog-bar {
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--purple);
+        transition: width 0.4s;
+      }
+
+      /* ── Controls ── */
+      .controls {
+        max-width: 960px;
+        margin: 1.5rem auto 0;
+        padding: 0 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .filter-group {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .fb {
+        font-size: 12px;
+        font-family: var(--font);
+        padding: 5px 13px;
+        border-radius: 99px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .fb:hover {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .fb.on {
+        background: var(--purple-dk);
+        border-color: var(--purple-dk);
+        color: #fff;
+      }
+      .search-wrap {
+        flex: 1;
+        min-width: 180px;
+      }
+      .search-wrap input {
+        width: 100%;
+        font-family: var(--font);
+        font-size: 13px;
+        padding: 6px 12px 6px 34px;
+        border-radius: 8px;
+        border: 1px solid var(--border2);
+        background: var(--card);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A7889' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 10px center;
+      }
+      .search-wrap input:focus {
+        border-color: var(--purple);
+      }
+      .search-wrap input::placeholder {
+        color: var(--hint);
+      }
+
+      /* ── Main content ── */
+      .content {
+        max-width: 960px;
+        margin: 1.5rem auto 4rem;
+        padding: 0 2rem;
+      }
+
+      /* section */
+      .section {
+        margin-bottom: 1.5rem;
+      }
+      .sec-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.15s;
+      }
+      .sec-hdr:hover {
+        border-color: var(--border2);
+      }
+      .sec-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sec-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .sec-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .sec-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .sec-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sec-pill {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 10px;
+        border-radius: 99px;
+      }
+      .chev {
+        font-size: 14px;
+        color: var(--hint);
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+      }
+      .chev.open {
+        transform: rotate(180deg);
+      }
+
+      /* problem table */
+      .sec-body {
+        display: none;
+        margin-top: 4px;
+      }
+      .sec-body.open {
+        display: block;
+      }
+      .tip-bar {
+        font-size: 11px;
+        color: var(--muted);
+        font-style: italic;
+        padding: 8px 16px;
+        border-left: 2px solid var(--border2);
+        margin: 6px 0 8px;
+        line-height: 1.5;
+      }
+      .tip-bar b {
+        color: var(--purple);
+        font-style: normal;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      thead th {
+        background: var(--surface);
+        padding: 7px 12px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--hint);
+        border-bottom: 1px solid var(--border);
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.1s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: var(--surface);
+      }
+      tbody tr.hidden {
+        display: none;
+      }
+      td {
+        padding: 9px 12px;
+        vertical-align: middle;
+        font-size: 12px;
+        color: var(--text);
+      }
+      .td-num {
+        width: 36px;
+        color: var(--hint);
+        font-family: var(--mono);
+        font-size: 11px;
+        text-align: center;
+      }
+      .td-name {
+        font-weight: 500;
+        font-size: 13px;
+      }
+      .td-lc {
+        width: 90px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+      .td-diff {
+        width: 72px;
+      }
+      .td-pattern {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .td-concept {
+        width: 110px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .td-hint {
+        width: 50px;
+        text-align: center;
+      }
+      .td-done {
+        width: 38px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 99px;
+      }
+      .easy {
+        background: var(--easy-bg);
+        color: var(--easy-fg);
+        border: 1px solid #1a4020;
+      }
+      .medium {
+        background: var(--med-bg);
+        color: var(--med-fg);
+        border: 1px solid #3a2510;
+      }
+
+      .hint-btn {
+        font-size: 10px;
+        font-family: var(--font);
+        padding: 2px 8px;
+        border-radius: 5px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .hint-btn:hover {
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+
+      .hint-row {
+        display: none;
+      }
+      .hint-row.show {
+        display: table-row;
+      }
+      .hint-row td {
+        background: #14121e;
+        border-left: 2px solid var(--purple-dk);
+        padding: 10px 14px 10px 24px;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.65;
+        border-bottom: 1px solid var(--border);
+      }
+      .hint-row td b {
+        color: var(--purple);
+      }
+      .hint-row td code {
+        font-family: var(--mono);
+        font-size: 10px;
+        background: var(--border);
+        padding: 1px 5px;
+        border-radius: 4px;
+        color: var(--teal);
+      }
+
+      .ck {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        accent-color: var(--purple);
+      }
+
+      /* concept tag colors */
+      .tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 500;
+        padding: 1px 6px;
+        border-radius: 5px;
+      }
+      .tag-s {
+        background: var(--teal-bg);
+        color: var(--teal);
+      }
+      .tag-h {
+        background: var(--purple-bg);
+        color: var(--purple);
+      }
+      .tag-b {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+
+      .lc-link {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .lc-link:hover {
+        color: var(--blue);
+      }
+
+      .no-res {
+        padding: 2rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* legend */
+      .legend {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 11px;
+        color: var(--muted);
+        margin: 1rem 0 0.5rem;
+        align-items: center;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+
+      @media (max-width: 600px) {
+        .hero,
+        .controls {
+          padding: 1.25rem 1rem;
+        }
+        .content {
+          padding: 0 1rem;
+        }
+        .td-concept {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-tag">Interview Prep · Python</div>
+        <h1>60 Problems on <span>Strings + HashMap</span></h1>
+        <p>
+          Every concept covered · Easy to Medium · Highest interview frequency ·
+          Click hint for approach
+        </p>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-v c-purple" id="s-total">60</div>
+            <div class="stat-l">Total problems</div>
+          </div>
+          <div class="stat">
+            <div class="stat-v c-teal" id="s-easy">0</div>
+            <div class="stat-l">Easy</div>
+          </div>
+          <div class="stat">
+            <div class="stat-v c-amber" id="s-med">0</div>
+            <div class="stat-l">Medium</div>
+          </div>
+          <div class="stat">
+            <div class="stat-v c-coral" id="s-done">0</div>
+            <div class="stat-l">Solved</div>
+          </div>
+        </div>
+
+        <div class="prog-wrap">
+          <div class="prog-meta">
+            <span>Progress</span>
+            <span id="prog-text">0 / 60 solved</span>
+          </div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="prog-fill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <div class="filter-group">
+        <button class="fb on" data-f="all" onclick="setF(this)">All</button>
+        <button class="fb" data-f="string" onclick="setF(this)">String</button>
+        <button class="fb" data-f="hash" onclick="setF(this)">HashMap</button>
+        <button class="fb" data-f="both" onclick="setF(this)">
+          String + HashMap
+        </button>
+        <button class="fb" data-f="Easy" onclick="setF(this)">Easy</button>
+        <button class="fb" data-f="Medium" onclick="setF(this)">Medium</button>
+        <button class="fb" data-f="done" onclick="setF(this)">Solved</button>
+      </div>
+      <div class="search-wrap">
+        <input
+          type="text"
+          placeholder="Search problems or LC number..."
+          oninput="doSearch(this.value)"
+        />
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="legend">
+        <span>Topic tags:</span>
+        <span class="legend-item"><span class="tag tag-s">S</span> String</span>
+        <span class="legend-item"
+          ><span class="tag tag-h">H</span> HashMap</span
+        >
+        <span class="legend-item"><span class="tag tag-b">S+H</span> Both</span>
+      </div>
+      <div id="root"></div>
+    </div>
+
+    <script>
+      const TOTAL = 60;
+      const solved = new Set();
+      let filt = "all",
+        search = "";
+
+      const SECTIONS = [
+        {
+          id: "freq",
+          name: "Frequency Counting",
+          sub: "Count chars/words with Counter or dict — appears in 80% of string interviews",
+          color: "#A78BFA",
+          bg: "#1F1B35",
+          pill_bg: "#2D2650",
+          pill_fg: "#A78BFA",
+          tip: "<b>Pattern:</b> <code>Counter(s)</code> or <code>defaultdict(int)</code>. Compare counters for anagram checks. Sort by <code>-count</code> for top-k. Always ask: do I need the count, or just existence?",
+          rows: [
+            [
+              1,
+              "Valid Anagram",
+              "LC #242",
+              "Easy",
+              "string",
+              "Freq count both, compare counters",
+              "<b>Approach:</b> <code>Counter(s) == Counter(t)</code>. Or build freq dict for s, decrement for t, check all zero. Edge: different lengths → False immediately. O(n) time, O(1) space (26 letters).",
+            ],
+            [
+              2,
+              "Ransom Note",
+              "LC #383",
+              "Easy",
+              "hash",
+              "Check magazine has enough of each char",
+              "<b>Approach:</b> <code>m = Counter(magazine)</code>. For each char in ransomNote: <code>m[c] -= 1</code>. If any goes below 0 → return False. Counter subtraction trick: <code>Counter(ransomNote) - Counter(magazine)</code> should be empty.",
+            ],
+            [
+              3,
+              "First Unique Character",
+              "LC #387",
+              "Easy",
+              "string+hash",
+              "Count then scan for count == 1",
+              "<b>Approach:</b> <code>count = Counter(s)</code>. Loop s again: return first index where <code>count[s[i]] == 1</code>. Two-pass O(n). Can also use <code>s.index(c)</code> after filtering unique chars.",
+            ],
+            [
+              4,
+              "Sort Chars By Frequency",
+              "LC #451",
+              "Medium",
+              "string+hash",
+              "Counter + sort by freq desc, build result",
+              "<b>Approach:</b> <code>Counter(s).most_common()</code> returns sorted list. Build: <code>''.join(c*cnt for c,cnt in pairs)</code>. Bucket sort variant: create n+1 buckets, place chars by freq, read right to left. O(n).",
+            ],
+            [
+              5,
+              "Top K Frequent Words",
+              "LC #692",
+              "Medium",
+              "hash",
+              "Heap with (-count, word) for tiebreak",
+              "<b>Approach:</b> <code>heapq.nsmallest(k, counts, key=lambda x: (-counts[x], x))</code>. The tuple comparison handles both freq and alphabetical ordering simultaneously. O(n log k).",
+            ],
+            [
+              6,
+              "Unique Number of Occurrences",
+              "LC #1207",
+              "Easy",
+              "hash",
+              "Freq values must themselves be unique",
+              "<b>Approach:</b> <code>counts = Counter(arr)</code>. <code>return len(set(counts.values())) == len(counts)</code>. If two keys share the same count, the set will be smaller than the dict.",
+            ],
+            [
+              7,
+              "Find Lucky Integer",
+              "LC #1394",
+              "Easy",
+              "hash",
+              "Value equals its own frequency",
+              "<b>Approach:</b> <code>c = Counter(arr)</code>. Filter keys where <code>key == c[key]</code>. Return <code>max(..., default=-1)</code>. One liner: <code>max((k for k,v in Counter(arr).items() if k==v), default=-1)</code>.",
+            ],
+            [
+              8,
+              "Number of Good Pairs",
+              "LC #1512",
+              "Easy",
+              "hash",
+              "For each num, answer += freq seen so far",
+              "<b>Approach:</b> <code>freq = defaultdict(int)</code>. For each num: <code>ans += freq[num]</code> (each existing occurrence pairs with current). Then <code>freq[num] += 1</code>. O(n).",
+            ],
+          ],
+        },
+        {
+          id: "twoptr",
+          name: "Two Pointers on Strings",
+          sub: "Palindromes, in-place reversal, comparing from both ends",
+          color: "#34D399",
+          bg: "#0D2420",
+          pill_bg: "#0F2E26",
+          pill_fg: "#34D399",
+          tip: "<b>Pattern:</b> <code>l=0, r=len-1</code>. Move inward while condition holds. For palindromes: skip non-alnum. For pairs: move the pointer that makes progress. Draw the state before coding.",
+          rows: [
+            [
+              9,
+              "Valid Palindrome",
+              "LC #125",
+              "Easy",
+              "string",
+              "Skip non-alnum, compare lowercase",
+              "<b>Approach:</b> <code>l,r = 0, len(s)-1</code>. While <code>l<r</code>: skip non-alphanumeric on both sides using <code>not s[l].isalnum()</code>. Compare <code>s[l].lower() == s[r].lower()</code>. Move inward.",
+            ],
+            [
+              10,
+              "Valid Palindrome II",
+              "LC #680",
+              "Easy",
+              "string",
+              "On mismatch try skipping l or r once",
+              "<b>Approach:</b> Write helper <code>isPalin(s,l,r)</code>. Main: when chars mismatch at <code>l,r</code> return <code>isPalin(s,l+1,r) or isPalin(s,l,r-1)</code>. Only one skip allowed total.",
+            ],
+            [
+              11,
+              "Reverse Vowels",
+              "LC #345",
+              "Easy",
+              "string",
+              "Two pointers, swap only vowels",
+              "<b>Approach:</b> <code>vowels = set('aeiouAEIOU')</code>. <code>l,r = 0, n-1</code>. Advance each pointer until it lands on a vowel. Swap <code>s[l], s[r]</code>. Move both inward. Convert string to list first in Python.",
+            ],
+            [
+              12,
+              "Reverse Words in String",
+              "LC #151",
+              "Medium",
+              "string",
+              "Split handles spaces, reverse list",
+              "<b>Approach:</b> <code>' '.join(reversed(s.split()))</code>. <code>s.split()</code> with no arg strips leading/trailing and collapses multiple spaces automatically. The cleanest Python solution.",
+            ],
+            [
+              13,
+              "Backspace String Compare",
+              "LC #844",
+              "Easy",
+              "string",
+              "Two pointers from end with skip counter",
+              "<b>Approach:</b> Process both strings from right. For each: if <code>#</code> increment skip, else if skip>0 decrement skip (discard char), else compare. When both produce a real char, compare them. Both must exhaust simultaneously.",
+            ],
+            [
+              14,
+              "Long Pressed Name",
+              "LC #925",
+              "Easy",
+              "string",
+              "j on typed can repeat chars of name[i-1]",
+              "<b>Approach:</b> <code>i=0, j=0</code>. If <code>name[i] == typed[j]</code> advance both. Else if <code>typed[j] == typed[j-1]</code> it's a repeat of last accepted char, advance j only. End: i must reach end of name.",
+            ],
+            [
+              15,
+              "3Sum",
+              "LC #15",
+              "Medium",
+              "string",
+              "Sort + fix i + two pointer inner",
+              "<b>Approach:</b> Sort. For each i (skip dupes): <code>l=i+1, r=n-1</code>. If sum<0 move l right, if sum>0 move r left, if 0 collect and skip dupes at l and r. O(n2).",
+            ],
+          ],
+        },
+        {
+          id: "sliding",
+          name: "Sliding Window on Strings",
+          sub: "Substrings with constraints — expand right freely, shrink left when violated",
+          color: "#60A5FA",
+          bg: "#0F1F35",
+          pill_bg: "#112035",
+          pill_fg: "#60A5FA",
+          tip: "<b>Pattern:</b> <code>l=0, counter={}</code>. Loop <code>r</code> from 0 to n-1. Add <code>s[r]</code> to counter. While window violates: remove <code>s[l]</code>, <code>l++</code>. Record answer. Works for distinct, frequency, and match constraints.",
+          rows: [
+            [
+              16,
+              "Longest Substring No Repeat",
+              "LC #3",
+              "Medium",
+              "string+hash",
+              "Map char→last index, jump l pointer",
+              "<b>Approach:</b> <code>last = {}</code>. For each <code>r</code>: if <code>s[r] in last</code>, move <code>l = max(l, last[s[r]]+1)</code>. Update <code>last[s[r]] = r</code>. Answer = <code>max(r-l+1)</code>. The max() prevents l from moving backward.",
+            ],
+            [
+              17,
+              "Longest Repeating Char Replacement",
+              "LC #424",
+              "Medium",
+              "string+hash",
+              "Window valid when len-max_freq <= k",
+              "<b>Approach:</b> <code>count={}, max_freq=0</code>. Expand r: <code>max_freq = max(max_freq, count[s[r]])</code>. If <code>(r-l+1) - max_freq > k</code>: shrink l. Key insight: max_freq never decreases — we only care about growing the window.",
+            ],
+            [
+              18,
+              "Find All Anagrams",
+              "LC #438",
+              "Medium",
+              "string+hash",
+              "Fixed window size len(p), freq compare",
+              "<b>Approach:</b> Use two 26-int arrays (or Counters). Build initial window. Slide: add <code>s[r]</code>, remove <code>s[l]</code>. When arrays equal, append <code>l</code>. Counter comparison with <code>==</code> works in Python.",
+            ],
+            [
+              19,
+              "Permutation in String",
+              "LC #567",
+              "Medium",
+              "string+hash",
+              "Same as anagrams — return True on first match",
+              "<b>Approach:</b> Identical to Find All Anagrams but return True as soon as window matches. Early exit possible. Frequency arrays of size 26 are faster than Counter for fixed-alphabet problems.",
+            ],
+            [
+              20,
+              "Minimum Window Substring",
+              "LC #76",
+              "Medium",
+              "string+hash",
+              "Track formed/required with two counters",
+              "<b>Approach:</b> <code>need=Counter(t), have={}, formed=0, required=len(need)</code>. Expand r: if <code>have[c]==need[c]</code> → <code>formed++</code>. When <code>formed==required</code>: shrink l, update answer. This is the hardest sliding window — master it.",
+            ],
+            [
+              21,
+              "Fruit Into Baskets",
+              "LC #904",
+              "Medium",
+              "string+hash",
+              "At most 2 distinct values in window",
+              "<b>Approach:</b> Maintain <code>Counter</code> of window. Expand r. While <code>len(counter)>2</code>: decrement <code>counter[fruits[l]]</code>, delete if 0, increment l. Max window = answer.",
+            ],
+            [
+              22,
+              "Subarrays with K Distinct",
+              "LC #992",
+              "Medium",
+              "hash",
+              "exactly(k) = atMost(k) - atMost(k-1)",
+              "<b>Approach:</b> You can't do exactly-k directly. Use identity: <code>exactly(k) = atMost(k) - atMost(k-1)</code>. <code>atMost</code> is a standard sliding window with <code>len(counter) <= k</code> condition.",
+            ],
+          ],
+        },
+        {
+          id: "prefix",
+          name: "Prefix Sum + HashMap",
+          sub: "Store prefix sums to find subarrays with target sum in O(n)",
+          color: "#FBB041",
+          bg: "#221A08",
+          pill_bg: "#2A2008",
+          pill_fg: "#FBB041",
+          tip: "<b>Pattern:</b> <code>prefix=0, mp={0:1}</code>. Each step: <code>prefix += num</code>. Check <code>mp.get(prefix-k, 0)</code>. Then <code>mp[prefix] += 1</code>. The <code>{0:1}</code> seed handles subarrays starting at index 0.",
+          rows: [
+            [
+              23,
+              "Subarray Sum Equals K",
+              "LC #560",
+              "Medium",
+              "hash",
+              "prefix_map stores {sum: count}",
+              "<b>Approach:</b> <code>prefix=0, mp={0:1}, ans=0</code>. For each num: <code>prefix+=num</code>. <code>ans += mp.get(prefix-k,0)</code>. <code>mp[prefix] = mp.get(prefix,0)+1</code>. Crucial: update map AFTER checking.",
+            ],
+            [
+              24,
+              "Contiguous Array",
+              "LC #525",
+              "Medium",
+              "hash",
+              "Replace 0→-1, find longest zero-sum subarray",
+              "<b>Approach:</b> Replace 0 with -1. Equal 0s and 1s → prefix sum stays same. Map stores first index of each prefix sum. When prefix seen again: <code>length = i - first_seen[prefix]</code>. Max such length = answer.",
+            ],
+            [
+              25,
+              "Binary Subarrays With Sum",
+              "LC #930",
+              "Medium",
+              "hash",
+              "Prefix sum on 0/1 array",
+              "<b>Approach:</b> Same as Subarray Sum Equals K but array is binary. <code>mp={0:1}</code>. <code>ans += mp.get(prefix-goal, 0)</code>. Also solvable with sliding window using <code>atMost</code> trick.",
+            ],
+            [
+              26,
+              "Subarray Sums Divisible by K",
+              "LC #974",
+              "Medium",
+              "hash",
+              "Store prefix % k counts",
+              "<b>Approach:</b> If <code>(prefix[i] - prefix[j]) % k == 0</code> then <code>prefix[i]%k == prefix[j]%k</code>. Map stores <code>{remainder: count}</code>. <code>ans += mp.get(rem, 0)</code> before adding current remainder. Python: use <code>rem = prefix%k</code> (always positive).",
+            ],
+            [
+              27,
+              "Minimum Operations to Reduce X to Zero",
+              "LC #1658",
+              "Medium",
+              "hash",
+              "Reframe: find max subarray sum = total - x",
+              "<b>Approach:</b> Finding elements from ends that sum to x is equivalent to finding the longest subarray summing to <code>total-x</code>. Use sliding window (all positive nums). <code>ans = n - len(subarray)</code>.",
+            ],
+            [
+              28,
+              "Path Sum III",
+              "LC #437",
+              "Medium",
+              "hash",
+              "DFS + prefix sum map on tree paths",
+              "<b>Approach:</b> DFS the tree. At each node: <code>curr_sum += val</code>. <code>ans += mp.get(curr_sum-target, 0)</code>. <code>mp[curr_sum] += 1</code>. After children: <code>mp[curr_sum] -= 1</code> (backtrack). Pre-seed <code>mp={0:1}</code>.",
+            ],
+          ],
+        },
+        {
+          id: "grouping",
+          name: "Grouping & Classification",
+          sub: "Map multiple items to a canonical key to group them",
+          color: "#F87171",
+          bg: "#2A1010",
+          pill_bg: "#301515",
+          pill_fg: "#F87171",
+          tip: "<b>Pattern:</b> Find a key that is invariant across the group. Anagrams → sorted string. Shifted strings → difference tuple. Same pattern → encoded shape. <code>defaultdict(list)</code> then group.append(item).",
+          rows: [
+            [
+              29,
+              "Group Anagrams",
+              "LC #49",
+              "Medium",
+              "string+hash",
+              "Sorted word as key, group into lists",
+              "<b>Approach:</b> <code>mp = defaultdict(list)</code>. For each word: <code>key = tuple(sorted(word))</code>. <code>mp[key].append(word)</code>. Return <code>list(mp.values())</code>. Alternative key: 26-int freq tuple — faster for long strings.",
+            ],
+            [
+              30,
+              "Group Shifted Strings",
+              "LC #249",
+              "Medium",
+              "string+hash",
+              "Normalize shift pattern as key",
+              "<b>Approach:</b> For each string, compute <code>key = tuple((ord(c)-ord(s[0]))%26 for c in s)</code>. All strings with same relative differences group together. <code>defaultdict(list)</code> collects groups.",
+            ],
+            [
+              31,
+              "Find Duplicate File in System",
+              "LC #609",
+              "Medium",
+              "hash",
+              "Map file content → list of paths",
+              "<b>Approach:</b> Parse: <code>parts = path_string.split()</code>. Dir = parts[0]. For each file: split on <code>'('</code> to get name and content. <code>mp[content].append(dir+'/'+name)</code>. Return groups with len > 1.",
+            ],
+            [
+              32,
+              "Brick Wall",
+              "LC #554",
+              "Medium",
+              "hash",
+              "Map edge positions to frequency",
+              "<b>Approach:</b> For each row: compute cumulative widths except last brick (that's the edge position). Map <code>pos → count</code>. Row with most edges at same position = fewest cuts. Answer = <code>n - max(edge_count.values(), default=0)</code>.",
+            ],
+            [
+              33,
+              "Find and Replace Pattern",
+              "LC #890",
+              "Medium",
+              "string+hash",
+              "Encode shape of both pattern and word",
+              "<b>Approach:</b> Encode a string: map each unique char to its order of first appearance (0,1,2...). <code>encode('aab') → [0,0,1]</code>. Word matches pattern iff their encodings are equal.",
+            ],
+          ],
+        },
+        {
+          id: "lookup",
+          name: "Complement Lookup",
+          sub: "Store what you've seen; check if the complement exists in O(1)",
+          color: "#86EFAC",
+          bg: "#0D2016",
+          pill_bg: "#0E2518",
+          pill_fg: "#86EFAC",
+          tip: "<b>Pattern:</b> For pair problems: as you iterate, ask 'have I seen the complement of this element?' Store elements in a set/map. This converts O(n2) brute force → O(n). Key: store index (Two Sum) or count (frequency problems).",
+          rows: [
+            [
+              34,
+              "Two Sum",
+              "LC #1",
+              "Easy",
+              "hash",
+              "Store complement, check in one pass",
+              "<b>Approach:</b> <code>mp = {}</code>. For each <code>(i, num)</code>: if <code>target-num in mp</code> return <code>[mp[target-num], i]</code>. Else <code>mp[num] = i</code>. Never use same element twice — storing index handles this.",
+            ],
+            [
+              35,
+              "4Sum II",
+              "LC #454",
+              "Medium",
+              "hash",
+              "Split into two halves, store sums of first half",
+              "<b>Approach:</b> Nested loop over <code>A,B</code>: store <code>mp[a+b] += 1</code>. Nested loop over <code>C,D</code>: <code>ans += mp.get(-(c+d), 0)</code>. O(n2) vs O(n4) brute force. Classic divide-into-halves trick.",
+            ],
+            [
+              36,
+              "Two Sum III – Data Structure Design",
+              "LC #170",
+              "Easy",
+              "hash",
+              "Map value→count; check complement",
+              "<b>Approach:</b> <code>add: mp[number]+=1</code>. <code>find: for each key k, check if target-k in mp and (target-k!=k or mp[k]>1)</code>. The extra condition handles the case where both numbers must be distinct elements.",
+            ],
+            [
+              37,
+              "Contains Duplicate II",
+              "LC #219",
+              "Easy",
+              "hash",
+              "Map value→last index, check distance",
+              "<b>Approach:</b> <code>mp = {}</code>. For each <code>(i, num)</code>: if <code>num in mp and i-mp[num] <= k</code> → True. Always update <code>mp[num] = i</code> to keep most recent index.",
+            ],
+            [
+              38,
+              "Intersection of Two Arrays II",
+              "LC #350",
+              "Easy",
+              "hash",
+              "Count in first, match and decrement in second",
+              "<b>Approach:</b> <code>c = Counter(nums1)</code>. For each num in nums2: if <code>c[num] > 0</code>, append to result and <code>c[num] -= 1</code>. Handles duplicates correctly. Follow-up: if sorted use two pointers.",
+            ],
+            [
+              39,
+              "Happy Number",
+              "LC #202",
+              "Easy",
+              "hash",
+              "Set to detect cycles — visited sum before?",
+              "<b>Approach:</b> <code>seen = set()</code>. Repeat: compute digit-square sum. If 1 → True. If in seen → False (cycle). Add to seen. Floyd's cycle detection also works: fast pointer does two steps.",
+            ],
+            [
+              40,
+              "Longest Harmonious Subsequence",
+              "LC #594",
+              "Easy",
+              "hash",
+              "Count freq; for each key check if key+1 exists",
+              "<b>Approach:</b> <code>c = Counter(nums)</code>. For each key: if <code>key+1 in c</code>, candidate = <code>c[key] + c[key+1]</code>. Track max candidate. Only adjacent values (diff of 1) count.",
+            ],
+          ],
+        },
+        {
+          id: "bidirect",
+          name: "Bidirectional Mapping",
+          sub: "Two hashmaps for one-to-one correspondence — isomorphism problems",
+          color: "#A78BFA",
+          bg: "#1F1B35",
+          pill_bg: "#2D2650",
+          pill_fg: "#A78BFA",
+          tip: "<b>Pattern:</b> When a problem requires unique mapping (each X maps to exactly one Y), use two dicts: <code>x_to_y</code> and <code>y_to_x</code>. At every step check both. If either conflicts → False.",
+          rows: [
+            [
+              41,
+              "Isomorphic Strings",
+              "LC #205",
+              "Easy",
+              "string+hash",
+              "Map s→t and t→s, check consistency",
+              "<b>Approach:</b> <code>s2t, t2s = {}, {}</code>. For each pair <code>(a,b)</code>: if <code>s2t.get(a) != b</code> or <code>t2s.get(b) != a</code> → False. Update both maps. Edge: <code>ab → aa</code> should fail because two s-chars map to same t-char.",
+            ],
+            [
+              42,
+              "Word Pattern",
+              "LC #290",
+              "Easy",
+              "string+hash",
+              "Map char→word and word→char",
+              "<b>Approach:</b> <code>words = s.split()</code>. Check lengths match. <code>p2w, w2p = {}, {}</code>. For each pair: check both maps consistent. Same bidirectional logic as isomorphic strings but char↔word instead of char↔char.",
+            ],
+            [
+              43,
+              "Find and Replace Pattern",
+              "LC #890",
+              "Medium",
+              "string+hash",
+              "Normalize both word and pattern, compare encodings",
+              "<b>Approach:</b> <code>def encode(s): mp={}; return [mp.setdefault(c, len(mp)) for c in s]</code>. Return words where <code>encode(word) == encode(pattern)</code>. <code>setdefault</code> assigns order-of-first-appearance index.",
+            ],
+            [
+              44,
+              "Encode and Decode TinyURL",
+              "LC #535",
+              "Medium",
+              "hash",
+              "Map short code → original URL",
+              "<b>Approach:</b> <code>encode_map, decode_map = {}, {}</code>. Encode: generate 6-char random code from <code>string.ascii_letters+digits</code>. Store both directions. Decode: return <code>decode_map[code]</code>.",
+            ],
+          ],
+        },
+        {
+          id: "palindrome",
+          name: "Palindrome Problems",
+          sub: "Expand around center, DP on substrings, char frequency tricks",
+          color: "#FBB041",
+          bg: "#221A08",
+          pill_bg: "#2A2008",
+          pill_fg: "#FBB041",
+          tip: "<b>Pattern:</b> Expand-around-center: for each of 2n-1 centers, expand while chars match. O(n2) time O(1) space. For 'can we form a palindrome' problems: count chars with odd frequency — at most 1 allowed.",
+          rows: [
+            [
+              45,
+              "Longest Palindromic Substring",
+              "LC #5",
+              "Medium",
+              "string",
+              "Expand odd and even center at each index",
+              "<b>Approach:</b> For each i: expand for odd length (<code>l=r=i</code>) and even length (<code>l=i, r=i+1</code>). While <code>s[l]==s[r]</code>: expand. Track max length span. O(n2) beats 95%+ of submissions.",
+            ],
+            [
+              46,
+              "Palindromic Substrings",
+              "LC #647",
+              "Medium",
+              "string",
+              "Count every successful expansion",
+              "<b>Approach:</b> Same expand-around-center. <code>count += 1</code> for every successful expansion (each expansion is one more palindrome). 2n-1 centers total. O(n2) — DP is not needed for Medium level.",
+            ],
+            [
+              47,
+              "Palindrome Pairs",
+              "LC #336",
+              "Medium",
+              "string+hash",
+              "For each word check reverses of all prefixes/suffixes",
+              "<b>Approach:</b> Build word→index map. For each word: for every split (prefix, suffix): if prefix is palindrome and reverse(suffix) in map → pair. If suffix is palindrome and reverse(prefix) in map → pair. O(n·k2).",
+            ],
+            [
+              48,
+              "Longest Palindrome (by building)",
+              "LC #409",
+              "Easy",
+              "string+hash",
+              "Even counts fully usable; one odd center",
+              "<b>Approach:</b> <code>c = Counter(s)</code>. <code>length = sum(v//2*2 for v in c.values())</code>. If any char has odd count: <code>length += 1</code> (place one in center). That's the max palindrome buildable.",
+            ],
+            [
+              49,
+              "Valid Palindrome III",
+              "LC #1216",
+              "Medium",
+              "string",
+              "DP with allowed k deletions",
+              "<b>Approach:</b> Find Longest Palindromic Subsequence (LPS) using DP. <code>dp[i][j]</code> = LPS length in <code>s[i..j]</code>. If <code>len(s) - LPS <= k</code> → True. LPS DP: if chars match <code>dp[i][j]=dp[i+1][j-1]+2</code> else <code>max(dp[i+1][j], dp[i][j-1])</code>.",
+            ],
+          ],
+        },
+        {
+          id: "design",
+          name: "String Simulation & Building",
+          sub: "Character-by-character construction, stack parsing, RLE, format conversion",
+          color: "#34D399",
+          bg: "#0D2420",
+          pill_bg: "#0F2E26",
+          pill_fg: "#34D399",
+          tip: "<b>Pattern:</b> Use a stack when you see nested brackets or 'undo last' logic. For RLE/compression: use a read-pointer and count. For format conversion (roman, base): use a lookup table and process left to right.",
+          rows: [
+            [
+              50,
+              "Decode String",
+              "LC #394",
+              "Medium",
+              "string",
+              "Stack stores (built_string, multiplier) on '['",
+              "<b>Approach:</b> <code>stack=[], curr='', k=0</code>. On digit: build k. On '[': push (curr,k), reset. On ']': <code>prev_str, num = stack.pop()</code>; <code>curr = prev_str + curr*num</code>. On char: append to curr.",
+            ],
+            [
+              51,
+              "String Compression",
+              "LC #443",
+              "Medium",
+              "string",
+              "Two pointer: read head + write head",
+              "<b>Approach:</b> <code>i=0 (read), w=0 (write)</code>. Count consecutive chars. Write char at w. If count>1 write each digit of count. Chars are written in-place before read pointer passes them — safe because write ≤ read.",
+            ],
+            [
+              52,
+              "Count and Say",
+              "LC #38",
+              "Medium",
+              "string",
+              "Simulate RLE for n iterations",
+              "<b>Approach:</b> Start <code>'1'</code>. Each iteration: scan current string, count runs with two pointers. Build next = <code>str(count)+char</code> for each run. Repeat n-1 times. Python: use <code>itertools.groupby</code> for clean code.",
+            ],
+            [
+              53,
+              "Roman to Integer",
+              "LC #13",
+              "Easy",
+              "string+hash",
+              "Subtract if smaller value precedes larger",
+              "<b>Approach:</b> Build <code>val = {'I':1,'V':5,'X':10,...}</code>. Scan left to right: if <code>val[s[i]] < val[s[i+1]]</code> subtract, else add. Process last char always as addition.",
+            ],
+            [
+              54,
+              "Integer to Roman",
+              "LC #12",
+              "Medium",
+              "string",
+              "Greedy from largest denomination",
+              "<b>Approach:</b> List pairs <code>[(1000,'M'),(900,'CM'),...,(1,'I')]</code> descending. While <code>num >= value</code>: append symbol, subtract value. Repeat. The 900,400,90,40,9,4 special cases must be in the table.",
+            ],
+            [
+              55,
+              "Zigzag Conversion",
+              "LC #6",
+              "Medium",
+              "string",
+              "Simulate rows with direction flag",
+              "<b>Approach:</b> <code>rows = [[] for _ in range(numRows)]</code>. <code>cur=0, down=True</code>. Each char: append to <code>rows[cur]</code>. Flip direction at row 0 and numRows-1. Join all rows at end.",
+            ],
+          ],
+        },
+        {
+          id: "design2",
+          name: "HashMap Design & Index Tracking",
+          sub: "Design data structures; track positions, timestamps, sequence states",
+          color: "#60A5FA",
+          bg: "#0F1F35",
+          pill_bg: "#112035",
+          pill_fg: "#60A5FA",
+          tip: "<b>Pattern:</b> For O(1) insert/delete/getRandom: combine a list (for getRandom) with a map {value→index}. Delete by swapping target with last element, updating map, then popping. This is the classic design trick.",
+          rows: [
+            [
+              56,
+              "Insert Delete GetRandom O(1)",
+              "LC #380",
+              "Medium",
+              "hash",
+              "List + map {val→index}; swap-to-delete",
+              "<b>Approach:</b> <code>lst=[], mp={}</code>. Insert: append to lst, store index in mp. Delete: swap with last element, update mp for swapped element, pop last, remove from mp. GetRandom: <code>random.choice(lst)</code>.",
+            ],
+            [
+              57,
+              "LRU Cache",
+              "LC #146",
+              "Medium",
+              "hash",
+              "OrderedDict: move_to_end on get/put",
+              "<b>Approach:</b> <code>from collections import OrderedDict</code>. Get: if key exists <code>move_to_end(key)</code> then return val. Put: if key exists <code>move_to_end</code>. If at capacity <code>popitem(last=False)</code> to evict LRU. Then set.",
+            ],
+            [
+              58,
+              "Time Based Key-Value Store",
+              "LC #981",
+              "Medium",
+              "hash",
+              "Map key→[(timestamp,val)]; binary search on get",
+              "<b>Approach:</b> <code>store = defaultdict(list)</code>. Set: append <code>(timestamp, value)</code>. Get: binary search on timestamps list for largest <code>t <= timestamp</code>. Use <code>bisect_right</code> then step back one. Return '' if not found.",
+            ],
+            [
+              59,
+              "Logger Rate Limiter",
+              "LC #359",
+              "Easy",
+              "hash",
+              "Map message→last allowed timestamp",
+              "<b>Approach:</b> <code>mp = {}</code>. <code>shouldPrint(t, msg)</code>: if <code>msg not in mp or t-mp[msg]>=10</code> → update <code>mp[msg]=t</code>, return True. Else return False. Simple but tests understanding of timestamp comparison.",
+            ],
+            [
+              60,
+              "Longest Consecutive Sequence",
+              "LC #128",
+              "Medium",
+              "hash",
+              "HashSet: only start at sequence minimums",
+              "<b>Approach:</b> <code>s = set(nums)</code>. For each num: if <code>num-1 not in s</code> (it's a sequence start) count up while <code>num+1 in s</code>. Track max streak. O(n) — each element visited at most twice total across all sequences.",
+            ],
+          ],
+        },
+      ];
+
+      function getTopicFilter(row_topic) {
+        if (row_topic === "string") return "string";
+        if (row_topic === "hash") return "hash";
+        return "both";
+      }
+
+      function countAll() {
+        let e = 0,
+          m = 0;
+        SECTIONS.forEach((sec) =>
+          sec.rows.forEach((r) => (r[3] === "Easy" ? e++ : m++)),
+        );
+        document.getElementById("s-easy").textContent = e;
+        document.getElementById("s-med").textContent = m;
+      }
+
+      function updateProg() {
+        const d = solved.size;
+        document.getElementById("s-done").textContent = d;
+        document.getElementById("prog-text").textContent =
+          d + " / " + TOTAL + " solved";
+        document.getElementById("prog-fill").style.width =
+          Math.round((d / TOTAL) * 100) + "%";
+      }
+
+      function tog(uid) {
+        document.getElementById("body" + uid)?.classList.toggle("open");
+        document.getElementById("chev" + uid)?.classList.toggle("open");
+      }
+
+      function showHint(id) {
+        document.getElementById(id)?.classList.toggle("show");
+      }
+
+      function setF(btn) {
+        document
+          .querySelectorAll(".fb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        filt = btn.dataset.f;
+        applyFilters();
+      }
+
+      function doSearch(v) {
+        search = v.toLowerCase();
+        if (v) {
+          document
+            .querySelectorAll(".fb")
+            .forEach((b) => b.classList.remove("on"));
+          document.querySelector("[data-f='all']").classList.add("on");
+          filt = "all";
+        }
+        applyFilters();
+      }
+
+      function applyFilters() {
+        let anyVisible = false;
+        SECTIONS.forEach((sec) => {
+          const bodyEl = document.getElementById("body" + sec.id);
+          if (!bodyEl) return;
+          const rows = bodyEl.querySelectorAll("tbody tr:not(.hint-row)");
+          let secVisible = 0;
+          rows.forEach((tr) => {
+            const num = parseInt(tr.dataset.num);
+            const diff = tr.dataset.diff;
+            const topic = tr.dataset.topic;
+            const name = tr.dataset.name;
+
+            const diffOk =
+              filt === "all" ||
+              filt === diff ||
+              (filt === "done" && solved.has(num)) ||
+              (filt === "string" && topic === "string") ||
+              (filt === "hash" && topic === "hash") ||
+              (filt === "both" && topic === "both");
+            const srchOk = !search || name.includes(search);
+            const visible = diffOk && srchOk;
+
+            tr.classList.toggle("hidden", !visible);
+            const hintId = "hint" + sec.id + "_" + num;
+            const hintRow = document.getElementById(hintId);
+            if (hintRow) hintRow.classList.toggle("hidden", !visible);
+            if (visible) secVisible++;
+          });
+          const secEl = bodyEl.closest(".section");
+          if (secEl) secEl.style.display = secVisible === 0 ? "none" : "";
+          if (secVisible > 0) anyVisible = true;
+        });
+        const noRes = document.getElementById("no-results");
+        if (noRes) noRes.style.display = anyVisible ? "none" : "";
+      }
+
+      function togDone(num, cb) {
+        if (cb.checked) solved.add(num);
+        else solved.delete(num);
+        updateProg();
+      }
+
+      function tagHtml(t) {
+        if (t === "string") return '<span class="tag tag-s">S</span>';
+        if (t === "hash") return '<span class="tag tag-h">H</span>';
+        return '<span class="tag tag-b">S+H</span>';
+      }
+
+      function render() {
+        const root = document.getElementById("root");
+        let html = "";
+        SECTIONS.forEach((sec) => {
+          html += `
+    <div class="section" id="sec-${sec.id}">
+      <div class="sec-hdr" onclick="tog('${sec.id}')">
+        <div class="sec-left">
+          <div class="sec-dot" style="background:${sec.color}"></div>
+          <div>
+            <div class="sec-name">${sec.name}</div>
+            <div class="sec-sub">${sec.sub}</div>
+          </div>
+        </div>
+        <div class="sec-right">
+          <span class="sec-pill" style="background:${sec.pill_bg};color:${sec.pill_fg}">${sec.rows.length} problems</span>
+          <span class="chev open" id="chev${sec.id}">▾</span>
+        </div>
+      </div>
+      <div class="sec-body open" id="body${sec.id}">
+        <div class="tip-bar">${sec.tip}</div>
+        <table>
+          <thead><tr>
+            <th style="width:36px">#</th>
+            <th>Problem</th>
+            <th style="width:90px">Source</th>
+            <th style="width:72px">Level</th>
+            <th>Pattern</th>
+            <th style="width:80px">Topic</th>
+            <th style="width:50px;text-align:center">Hint</th>
+            <th style="width:38px;text-align:center">Done</th>
+          </tr></thead>
+          <tbody>
+    `;
+          sec.rows.forEach((r) => {
+            const [num, name, lc, diff, topic, pattern, hint] = r;
+            const topicKey = getTopicFilter(topic);
+            html += `
+        <tr data-num="${num}" data-diff="${diff}" data-topic="${topicKey}" data-name="${name.toLowerCase()} ${lc.toLowerCase()}">
+          <td class="td-num">${num}</td>
+          <td class="td-name">${name}</td>
+          <td class="td-lc"><a class="lc-link" href="https://leetcode.com/problems/" target="_blank">${lc}</a></td>
+          <td class="td-diff"><span class="badge ${diff.toLowerCase()}">${diff}</span></td>
+          <td class="td-pattern">${pattern}</td>
+          <td class="td-concept">${tagHtml(topic)}</td>
+          <td class="td-hint"><button class="hint-btn" onclick="showHint('hint${sec.id}_${num}')">hint</button></td>
+          <td class="td-done"><input type="checkbox" class="ck" onchange="togDone(${num},this)" ${solved.has(num) ? "checked" : ""}></td>
+        </tr>
+        <tr class="hint-row" id="hint${sec.id}_${num}">
+          <td></td>
+          <td colspan="7">${hint}</td>
+        </tr>
+      `;
+          });
+          html += `</tbody></table></div></div>`;
+        });
+        html += `<div id="no-results" class="no-res" style="display:none">No problems match your filter.</div>`;
+        root.innerHTML = html;
+      }
+
+      render();
+      countAll();
+      updateProg();
+    </script>
+  </body>
+</html>
